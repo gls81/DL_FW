@@ -1,0 +1,12 @@
+{
+    "TYPE": "LL",
+    "TASK" : "Landmark",
+    "METHOD": "GT",
+    "ARCH": "Ground_Truth",
+    "EVAL_PARAMS" :
+    {
+        "NONE" : ''
+    }
+}
+    
+

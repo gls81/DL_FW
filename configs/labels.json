@@ -1,0 +1,57 @@
+{
+"VIDEO": { 
+            "INDEX": {"FOLDER":"","SAVENAME":"VIDEO_INDEX.npy"},
+            "PATH": null
+        },
+"SUBJECT": {
+            "LABEL": {"FOLDER":"/gt_subject/","SAVENAME":"SUBJECT_LABEL.npy"},
+            "PATH": "gt_subject",
+            "TYPE": "SUB"
+        },
+"PALSY_BINARY": 
+            { 
+            "LABEL": {"SAVENAME" : "GT_PALSY_BINARY_LABEL.npy", "RANGE": [0,1], "LEGEND": ["Non Palsy", "Palsy"]},
+            "PATH": ""
+            },
+"PALSY_LEVELS": 
+            { 
+            "LABEL": {"FOLDER" : "/gt_palsy_levels/" , "SAVENAME" : "GT_PALSY_LEVELS_LABEL.npy", "RANGE": [0,1,2,3,4,5], "LEGEND": ["Grade 1", "Grade 2","Grade 3","Grade 4","Grade 5","Grade 6"]},
+            "PATH": ""
+            },
+"SMILE": { 
+            "LABEL": {"FOLDER" : "/gt_smile/", "SAVENAME" : "GT_SMILE_LABEL.npy", "RANGE": [0,1], "LEGEND": ["Other", "Smile"]},
+            "PATH": "gt_palsy_levels"
+        },
+"MOUTH": { 
+            "LABEL": {"FOLDER" : "/gt_mouth/", "SAVENAME" : "GT_MOUTH_LABEL.npy", "RANGE": [0,1,2,3,4], "LEGEND": ["None", "Smile", "Open", "Other", "Other"]},
+            "PATH": "gt_mouth"
+        },
+"EYE": { 
+            "LABEL": {"FOLDER" : "/gt_eye/", "SAVENAME" : "GT_EYE_LABEL.npy", "RANGE": [0,1,2,3], "LEGEND": ["Other", "Smile"]},
+            "PATH": "gt_eye"
+        },
+"BROW": { 
+            "LABEL": {"FOLDER" : "/gt_brow/", "SAVENAME" : "GT_BROW_LABEL.npy", "RANGE": [0,1], "LEGEND": ["Other", "Smile"]},
+            "PATH": "gt_brow",
+            "TYPE": "OD"
+        },
+"EXPRESSION_CK": {
+            "LABEL": {"FOLDER" : "/gt_expression_ck/", "SAVENAME" : "GT_EXPRESSION_CK.npy", "RANGE": [1,2,3,4,5,6,7], "LEGEND": ["neutral", "anger", "contempt", "disgust", "fear", "happy", "sadness", "surprise"]},
+            "PATH": "gt_expression_ck",
+            "TYPE": "OD"
+        },
+"FACE": {
+            "BBOX": {"FOLDER" : "/gt_face/", "SAVENAME" : "GT_FACE_BBOX.npy"},
+            "LABEL": {"FOLDER" : "/gt_smile/", "SAVENAME" : "GT_FACE_BBOX_LABEL.npy", "RANGE": [0,1], "LEGEND": ["FACE", "BACKGROUND"]},
+            "SCORE": {"FOLDER" : "/gt_smile/", "SAVENAME" : "GT_FACE_BBOX_SCORE.npy" },
+            "PATH": "gt_face",
+            "TYPE": "OD"
+            },
+"FACE_LM": { 
+            "LM": {"FOLDER": "/gt_lm/", "SAVENAME": "GT_FACE_LM.npy"},
+            "VISIBILTY": {"FOLDER": "/gt_lm/", "SAVENAME": "GT_FACE_LM_VIS.npy"},
+            "INDEX": {"FOLDER": "/gt_lm/", "SAVENAME": "GT_FACE_LM_INDEX.npy"},
+            "PATH": "gt_face_lm",
+            "TYPE": "LM"
+           }
+}

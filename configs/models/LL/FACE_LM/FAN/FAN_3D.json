@@ -1,0 +1,13 @@
+{
+    "TYPE": "LL",
+    "TASK" : "Landmark",
+    "METHOD": "FAN",
+    "ARCH": "FAN_3D",
+    "PARAMETERS" :
+    {
+        "LANDMARKS" : '3D',
+        "FLIP": false
+    }
+}
+    
+

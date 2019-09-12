@@ -1,0 +1,13 @@
+{
+    "TYPE": "FE",
+    "TASK" : "Palsy",
+    "METHOD": "SYM",
+    "ARCH": "sym",
+    "ANNO" : "IBUG",
+    "EXTERNAL": false,
+    "EVAL_PARAMS" :
+    {
+    }
+}
+    
+

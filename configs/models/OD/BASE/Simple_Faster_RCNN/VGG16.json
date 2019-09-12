@@ -1,0 +1,38 @@
+{
+    "TYPE": "OD",
+    "TASK" : "Face",
+    "METHOD": "Simple_Faster_RCNN",
+    "ARCH": "VGG16",
+    "EXTERNAL": false,
+    "PARAMETERS" :
+    {
+            "MODEL" : 
+                  {
+                        "NUM_CLASSES" : 1000,
+                        "TYPE" : "vgg16",
+                        "ROI_SIGMA" : 1,
+                        "PRN_SIGMA" : 3
+                    },
+        "TRAINER" : 
+                  {
+                        "OPTIMIZER" : "SGD",
+                        "LEARNING_RATE": 1e-3,
+                        "LEARNING_RATE_DECAY" : 0.1,
+                        "WEIGHT_DECAY" : 0.0005
+                    },
+        "BATCH_SIZE": 1,
+        "START_EPOCH" : 1,
+        "EPOCHS" : 14,
+        "SAMPLE_MAX_SIZE": 1000,
+        "SAMPLE_MIN_SIZE": 600,
+        "MEAN_DATASET" : "activitynet",
+        "NORM_VALUE" : 1,
+        "MEAN_NORMALISATION" : true,
+        "STD_NORMALISATION" : false,
+        "INITIAL_SCALE" : 1,
+        "NUM_SCALES" : 5,
+        "SCALE_STEP" :  0.840896415
+    }
+}
+    
+

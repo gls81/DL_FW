@@ -1,0 +1,24 @@
+{
+    "NAME": "IEEE_Access_Face_Action",
+    "TYPE": "AC",
+    "TRAIN_DATASET": ["FaceAction_Data"],
+    "EVAL_DATASETS": ["FaceAction_Data"],
+    "TRAIN" : false,
+    "REPRODUCE_METRICS" : false,
+    "METRICS" : {"CM" : true, "CR" : true},
+    "METHODS": [
+        {
+            "PRE" : [
+                    { "TYPE" : "OD", "METHOD" : "Simple_Faster_RCNN", "ARCH" : "VGG16", "LABELS": ["FACE"], "PARAMS": {}},
+                    { "TYPE" : "LL", "METHOD" : "FAN", "ARCH" : "FAN_2D", "LABELS": ["FACE_LM"], "PARAMS": {} }         
+            ],
+            "MAIN": { 
+                    "TYPE": "AC", "METHOD" : "3DCNN", "ARCH" : "Resnet18", "TRAIN_MODEL": "BASE", "LABELS": ["PALSY_LEVELS"], 
+                    "PARAMS": { "BATCH_SIZE": 256, "SAMPLE_DURATION": 8, "EPOCHS" : 50 , "LOSS" : "SOFTMAX" },
+                    "PROTOCOL_NAME" : "LOSO", "PROTOCOL_INDEX" : [0,6,7,13,17]
+                    },          
+            "TRAIN" : {"RESUME" : false, "OVERIDE" : false},       
+            "OUTPUT": {"NAME" : "Palsy Grading", "FULL_NAME" : "Palsy Softmax"}
+        }
+    ]
+}

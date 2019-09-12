@@ -1,0 +1,13 @@
+{
+    "TYPE": "LL",
+    "TASK" : "Landmark",
+    "METHOD": "TSM",
+    "ARCH": "Face99",
+    "ANNO" : "TSM",
+    "EXTERNAL": true,
+    "EVAL_PARAMS" :
+    {
+    }
+}
+    
+

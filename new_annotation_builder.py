@@ -35,26 +35,31 @@ def saveJSON(data, filename):
     return
 
 def creatJSONConfigFile(dataset,name,labels, sub_dirs):
+
     config = {
             "DATASET": dataset,
             "SUB_DATASET": name,
             "HYBRID" : False,
             "SUB_DIRS": sub_dirs,
+            "VIDEO" : False,
             "LABELS":{}
     }
 
     config["LABELS"] = labels
 
+    if "VIDEO" in loadJSON(os.path.join(datasets_dir, dataset,name ,"info.json")):
+        config["VIDEO"] = True
+
     return config
 
 def getLabelData(gt_labels,labels):
 
-    data = {}
+    data = []
 
     for label in labels:
         for gt_label in gt_labels:
             if label == gt_labels[gt_label]["PATH"]:
-                data[gt_label] = { "EXT" : "txt" }
+                data.append(gt_label)
 
     return data
 
@@ -96,8 +101,8 @@ def getImageList(images_dir, st, ext_list):
 
     return image_list
 
-def singleLabel(ds, file_name, ext, ind, folder):
-    file_name = file_name.replace("/images/", folder)
+def singleLabel(ds, file_name, ext, ind, target_dir):
+    file_name = file_name.replace("/images/", "/" + target_dir + "/")
     file_path = file_name[:-3] + ext  
     file_data = pd.read_csv(file_path, delimiter='\t', header=None).values
     label = file_data[0][0]
@@ -144,14 +149,14 @@ def writeBBOXlist(ds, bbox_name, ext, ind , target_dir):
         label[i] = str(j[4])
     return bbox, label, scores
 
-def writeLMlist(ds, lm_name, ext, processing):
+def writeLMlist(ds, lm_name, ext, processing, target_dir):
     
     if 'IBUG' in processing:
         lm_total_num = 68
     elif 'AFLW' in processing: 
         lm_total_num = 21
     
-    lm_name = lm_name.replace("/images/", "/gt_lm/")
+    lm_name = lm_name.replace("/images/", "/" + target_dir + "/")
     lm_path = lm_name[:-3] + ext
      
     if os.path.isfile(lm_path):
@@ -224,7 +229,7 @@ def processBBOX(image_anno, ext, label_info, anno_image_dir, anno_video_dir=None
         bbox_scores = [None] * len(image_anno) #Note this is more for trouble shooting all scores are 1 for gt
 
         for i, name in enumerate(image_anno):
-            bbox_list[i], bbox_label[i], bbox_scores[i] = writeBBOXlist(dataset_name, name, ext, i, label_info["PATH"])
+            bbox_list[i], bbox_label[i], bbox_scores[i] = writeBBOXlist(dataset_name, name, ext["EXT"], i, label_info["PATH"])
         savename = os.path.join(anno_image_dir, label_info["BBOX"]["SAVENAME"])
         with open(savename, "wb") as fp:   #Pickling
             pickle.dump(bbox_list, fp)
@@ -239,10 +244,9 @@ def processLandmarks(image_anno, ext, label_info, anno_image_dir, anno_video_dir
         landmark_list = [None] * len(image_anno)
         visibilty_list = [None] * len(image_anno)
         gt_list =  np.zeros((len(image_anno), 1), dtype=bool)#[None] * len(image_anno)
-        ext = config['LABELS']['FACE_LM']['EXT']
         for i, name in enumerate(image_anno):
             #print(name)
-            landmark_list[i], visibilty_list[i], gt_list[i] = writeLMlist(dataset_name, name, ext, config['LABELS']['FACE_LM']['ANNO'])
+            landmark_list[i], visibilty_list[i], gt_list[i] = writeLMlist(dataset_name, name,  ext["EXT"], ext["FORMAT"], label_info["PATH"])
         savename = os.path.join(anno_image_dir, label_info["LM"]["SAVENAME"])
         with open(savename, "wb") as fp:   #Pickling
             pickle.dump(landmark_list, fp)
@@ -252,7 +256,7 @@ def processLandmarks(image_anno, ext, label_info, anno_image_dir, anno_video_dir
         savename = os.path.join(anno_image_dir, label_info["INDEX"]["SAVENAME"])
         with open(savename, "wb") as fp:   #Pickling
             pickle.dump(gt_list, fp)
-        savename = anno_image_dir + 'GT_LM_INDEX.mat'       
+        savename = os.path.join(anno_image_dir, 'GT_LM_INDEX.mat')
         sio.savemat(savename, {'gt_lms_index': gt_list})
 
 def processSingleLabel(image_anno, ext, label_info, anno_image_dir, anno_video_dir=None, video=False, video_index=None):
@@ -268,11 +272,28 @@ def processSingleLabel(image_anno, ext, label_info, anno_image_dir, anno_video_d
         with open(savename, "wb") as fp:   #Pickling
             pickle.dump(palsy_level_video, fp)
 
+def processSubjectLabel(image_anno, ext, label_info, anno_image_dir, anno_video_dir=None, video=False, video_index=None):
+
+    subject_list = [None] * len(image_anno)
+    for i, name in enumerate(image_anno):
+        if hybrid:
+            subject_list[i] = str(hybrid_index[i])  + '.' + str(singleLabel(dataset_name, name, config['LABELS']['SUBJECT']['EXT'], i, labels['SUBJECT']['LABEL']['FOLDER']))
+        else:
+            subject_list[i] = singleLabel(dataset_name, name, "txt", i, labels['SUBJECT']['LABEL']['FOLDER'])
+    savename = os.path.join(anno_image_dir, label_info["LABEL"]["SAVENAME"])
+    with open(savename, "wb") as fp:   #Pickling
+        pickle.dump(subject_list, fp)
+    if 'VIDEO' in config['LABELS']:
+        subject_list_video = imageToVideoLabels(video_index,subject_list, label=True)
+        savename = anno_video_dir + labels['SUBJECT']['LABEL']['SAVENAME']
+        with open(savename, "wb") as fp:   #Pickling
+            pickle.dump(subject_list_video, fp)
+
 
 
 def create_anno_numpy(config_file):
 
-    label_funcs_map = {"OD": processBBOX, "LM": processLandmarks, "AD": processSingleLabel}
+    label_funcs_map = {"OD": processBBOX, "LM": processLandmarks, "AD": processSingleLabel,"SUB": processSubjectLabel}
     config = loadJSON(config_file)
     labels = loadJSON(labels_file)
 
@@ -280,10 +301,9 @@ def create_anno_numpy(config_file):
     hybrid = config['HYBRID']
     ext = ['.jpg','.png']
 
-    if 'VIDEO' in config['LABELS']:
-        video = True
-    else:
-        video = False
+
+    video = config["VIDEO"]
+
 
     if hybrid:
         match_labels = False
@@ -317,11 +337,9 @@ def create_anno_numpy(config_file):
         anno_video_dir = os.path.join(base_dir, 'dataloader' , config['SUB_DATASET'], 'video')
         images_dir = os.path.join(base_dir, config['SUB_DATASET'], 'images' )
         image_list = getImageList(images_dir, ss, ext)
-    
-    
+
     image_anno = [None] * len(image_list)
-    
-        
+
     #Keep our files in a folder in the base dir
     if not os.path.exists(anno_image_dir):
         os.makedirs(anno_image_dir)
@@ -340,10 +358,10 @@ def create_anno_numpy(config_file):
         image_name = j.split('\\')
         image_path = "/".join(image_name)
         image_anno[i] =  image_path   
-    savename = anno_image_dir + 'Images_file.npy'
+    savename = os.path.join(anno_image_dir, 'Images_file.npy')
     with open(savename, "wb") as fp:   #Pickling
             pickle.dump(image_anno, fp)
-    savename = anno_image_dir + 'Images_file.mat'       
+    savename = os.path.join(anno_image_dir, 'Images_file.mat')
     sio.savemat(savename, {'images': image_anno})
 
     # kf = KFold(n_splits=10)
@@ -361,35 +379,21 @@ def create_anno_numpy(config_file):
                 if name[-2] !=  prev_name[-2]:
                     video_ind = video_ind + 1
             video_index.append(video_ind)
-        savename = anno_image_dir + 'VIDEO_INDEX.npy'
+        savename = os.path.join(anno_video_dir, 'VIDEO_INDEX.npy')
         with open(savename, "wb") as fp:   #Pickling
             pickle.dump(video_index, fp)
-        savename = anno_video_dir + 'VIDEO_INDEX.npy'
-        with open(savename, "wb") as fp:   #Pickling
-            pickle.dump(video_index, fp)
-    
-    if 'SUBJECT' in config['LABELS']:
-        subject_list = [None] * len(image_anno)
-        for i, name in enumerate(image_anno):
-            if hybrid:
-                subject_list[i] = str(hybrid_index[i])  + '.' + str(singleLabel(dataset_name, name, config['LABELS']['SUBJECT']['EXT'], i, labels['SUBJECT']['LABEL']['FOLDER']))
-            else:
-                subject_list[i] = singleLabel(dataset_name, name, config['LABELS']['SUBJECT']['EXT'], i, labels['SUBJECT']['LABEL']['FOLDER'])
-        savename = anno_image_dir + labels['SUBJECT']['LABEL']['SAVENAME']
-        with open(savename, "wb") as fp:   #Pickling
-            pickle.dump(subject_list, fp)
-        if 'VIDEO' in config['LABELS']:
-            subject_list_video = imageToVideoLabels(video_index,subject_list, label=True)
-            savename = anno_video_dir + labels['SUBJECT']['LABEL']['SAVENAME']
-            with open(savename, "wb") as fp:   #Pickling
-                pickle.dump(subject_list_video, fp)
+
 
     for label in config['LABELS']:
         ty = labels[label]["TYPE"]
-        if video:
-            label_funcs_map[ty](image_anno,config['LABELS'][label]['EXT'], labels[label], anno_image_dir, anno_video_dir=anno_video_dir, video=video, video_index=video_index)
+        if label == "SUBJECT":
+            ext = loadJSON(os.path.join(base_dir, config['SUB_DATASET'], "info.json"))[label]
         else:
-            label_funcs_map[ty](image_anno,config['LABELS'][label]['EXT'], labels[label], anno_image_dir)
+            ext = loadJSON(os.path.join(base_dir, config['SUB_DATASET'], "info.json"))[label]
+        if video:
+            label_funcs_map[ty](image_anno, ext, labels[label], anno_image_dir, anno_video_dir=anno_video_dir, video=video, video_index=video_index)
+        else:
+            label_funcs_map[ty](image_anno, ext, labels[label], anno_image_dir)
 
 
     if video:
@@ -451,7 +455,7 @@ def create_config_files(dataset_name):
 
 if __name__ == '__main__':
 
-    dataset_name = 'AFW'
+    dataset_name = 'CK+'
     config_files = create_config_files(dataset_name)
     for config_file in config_files:
         dataset_cfg = create_anno_numpy(config_file)

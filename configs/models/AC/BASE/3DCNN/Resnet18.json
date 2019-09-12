@@ -1,0 +1,53 @@
+{
+    "TYPE": "AD",
+    "TASK" : "FaceAction",
+    "METHOD": "3DCNN",
+    "ARCH": "Resent18",
+    "EXTERNAL": false,
+    "PARAMETERS" :
+    {
+        "MODEL" : 
+                  {
+                        "NUM_CLASSES" : 400,
+                        "TYPE" : "resnet",
+                        "DEPTH" :  18,
+                        "RESENT_SHORTCUT" :  "A",
+                        "LANDMARK_DATA" : true,
+                        "LOAD_MODEL": true,
+                        "MODEL_PATH" : "D:/Research/Code/DL_FW/libs/architectures/AC/videoCNN/pretrained_models/resnet-18-kinetics.pth",
+                        "MANUAL_SEED" :  1,
+                        "FINE_TUNE_START_INDEX" : 4
+                    },
+        "TRAINER" : 
+                  {
+                        "OPTIMIZER" : "SGD",
+                        "LEARNING_RATE": 0.1,
+                        "LEARNING_RATE_DECAY" : 0.0005,
+                        "MOMENTUM" : 0.9,
+                        "DAMPENING" :  0.9,
+                        "WEIGHT_DECAY" :  0.001,
+                        "NESTEROV" : false,
+                        "LR_PATIENCE": 10
+                    },
+
+
+        "CROP" : "object",
+        "BATCH_SIZE": 256,
+        "LANDMARK_DATA" : true,
+        "TRAIN" : true,
+        "START_EPOCH" : 1,
+        "EPOCHS" : 25,
+        "SAMPLE_SIZE": 112,
+        "SAMPLE_DURATION" : 7,
+        "CUDA" : true,
+        "MEAN_DATASET" : "activitynet",
+        "NORM_VALUE" : 1,
+        "MEAN_NORMALISATION" : true,
+        "STD_NORMALISATION" : false,
+        "INITIAL_SCALE" : 1,
+        "NUM_SCALES" : 5,
+        "SCALE_STEP" :  0.840896415
+    }
+}
+    
+

@@ -1,0 +1,13 @@
+{
+    "TYPE": "LL",
+    "TASK" : "Landmark",
+    "METHOD": "DRMF",
+    "ARCH": "DRMF",
+    "ANNO" : "DRMF66",
+    "EXTERNAL": true,
+    "EVAL_PARAMS" :
+    {
+    }
+}
+    
+

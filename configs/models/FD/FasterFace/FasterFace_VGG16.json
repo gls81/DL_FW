@@ -1,0 +1,18 @@
+{
+    "TYPE": "OD",
+    "TASK" : "Face",
+    "METHOD": "FasterFace",
+    "ARCH": "FasterFace_VGG16",
+    "EXTERNAL": false,
+    "PARAMETERS" :
+    {
+        "MODEL_PATH" : "D:/Research/Code/DL_FW/saved_models/FaceDetection/FasterRCNN_WiderFaces_vgg16_final.pth",
+        "DATASET" : 
+                {
+                        "CROP" : "object",
+                        "BATCH_SIZE": 128
+                }
+    }
+}
+    
+

@@ -1,0 +1,23 @@
+{
+    "TYPE": "LL",
+    "TASK" : "Landmark",
+    "METHOD": "FAN",
+    "ARCH": "FAN_2D",
+    "ANNO" : "IBUG",
+    "EXTERNAL": false,
+    "PARAMETERS" :
+    {
+        "MODEL" : 
+                  {
+
+                  },
+        "LANDMARKS" : "2D",
+        "FLIP": false,
+        "DATASET" : 
+                {
+                        "CROP" : "object",
+                        "BATCH_SIZE": 128
+                }
+    }
+}
+    

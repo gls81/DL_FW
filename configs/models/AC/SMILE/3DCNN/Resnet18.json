@@ -1,0 +1,96 @@
+{
+    "TYPE": "AD",
+    "TASK" : "SmileDetection",
+    "METHOD": "3DCNN",
+    "ARCH": "Resent18",
+    "TRAIN_PARAMS" :
+    {
+        "MODEL" : 
+                  {
+                        "NUM_CLASSES" : 400,
+                        "NUM_FINE_TUNE_CLASSES": 2,
+                        "TYPE" : "resnet",
+                        "DEPTH" :  18,
+                        "RESENT_SHORTCUT" :  "A",
+                        "LANDMARK_DATA" : true,
+                        "LANDMARK_DATA_FILE": "File",
+                        "LOAD_MODEL": true,
+                        "MODEL_PATH" : "D:/Research/Code/DL_FW/libs/architectures/videoCNN/pretrained_models/resnet-18-kinetics.pth",
+                        "MANUAL_SEED" :  1,
+                        "FINE_TUNE_START_INDEX" : 4
+                    },
+        "TRAINER" : 
+                  {
+                        "OPTIMIZER" : "SGD",
+                        "LEARNING_RATE": 0.1,
+                        "MOMENTUM" : 0.9,
+                        "DAMPENING" :  0.9,
+                        "WEIGHT_DECAY" :  0.001,
+                        "NESTEROV" : false,
+                        "LR_PATIENCE": 10
+                    },
+        "DATASET" : 
+                    {
+                        "NAME" : "FaceAction_Train",
+                        "LABELS": ["SMILE"],
+                        "CROP" : "object",
+                        "BATCH_SIZE": 128,
+                        "LANDMARK_DATA" : true,
+                        "LANDMARK_DATA_FILE" : "D:/Research/Experiments/Base/Results/FaceAction_Train/LandmarkLocalisation/FAN/FasterFace_VGG16+FAN_2D_landmarks.txt"
+                },
+        "TRAIN" : true,
+        "START_EPOCH" : 1,
+        "EPOCHS" : 10,
+        "SAMPLE_SIZE": 112,
+        "SAMPLE_DURATION" : 7,
+        "CUDA" : true,
+        "MEAN_DATASET" : "activitynet",
+        "NORM_VALUE" : 1,
+        "MEAN_NORMALISATION" : true,
+        "STD_NORMALISATION" : false,
+        "INITIAL_SCALE" : 1,
+        "NUM_SCALES" : 5,
+        "SCALE_STEP" :  0.840896415
+    },
+    "EVAL_PARAMS" :
+    {
+        "MODEL" : 
+                  {
+                        "NUM_CLASSES" : 2,
+                        "NUM_FINE_TUNE_CLASSES": 2,
+                        "TYPE" : "resnet",
+                        "DEPTH" :  18,
+                        "RESENT_SHORTCUT" :  "A",
+                        "LANDMARK_DATA" : true,
+                        "LANDMARK_DATA_FILE": "File",
+                        "LOAD_MODEL": true,
+                        "MODEL_PATH" : "D:/Research/Experiments/IEEE_Access_Face_Action/Smile/Models/3DCNN/Resent18/model/save_50.pth",
+                        "MANUAL_SEED" :  1,
+                        "FINE_TUNE_START_INDEX" : 0
+                    },
+        "DATASET" : 
+                    {
+                        "CROP" : "object",
+                        "LABELS": ["SMILE"],
+                        "BATCH_SIZE": 1,
+                        "LANDMARK_DATA" : true,
+                        "TRANSFORMS" : 
+                                    {
+                                    "CROP" : "object"
+                                    } 
+                },
+        "TRAIN" : false,
+        "SAMPLE_SIZE": 112,
+        "SAMPLE_DURATION" : 7,
+        "CUDA" : true,
+        "MEAN_DATASET" : "activitynet",
+        "NORM_VALUE" : 1,
+        "MEAN_NORMALISATION" : true,
+        "STD_NORMALISATION" : false,
+        "INITIAL_SCALE" : 1,
+        "NUM_SCALES" : 5,
+        "SCALE_STEP" :  0.840896415
+        }
+}
+    
+
